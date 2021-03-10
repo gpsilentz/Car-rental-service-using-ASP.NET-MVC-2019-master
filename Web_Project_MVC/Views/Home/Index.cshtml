@@ -1,0 +1,152 @@
+﻿@model IEnumerable<Web_Project_MVC.Models.Vehicles>
+
+@{
+    ViewBag.Title = "iRent";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="hero-area bg-1 text-center overly">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="content-block">
+                    <h1>Vehicle rental</h1>
+                    <p>Join to us today and become our one of the happy customer!</p>
+                    <div class="short-popular-category-list text-center">
+                        <h2>Popular Categories</h2>
+                        <ul class="list-inline">
+                            <li class="list-inline-item">
+                                @Html.ActionLink("Cars", "Dashboard", new { id = "Cars" })
+                            </li>
+                            <li class="list-inline-item">
+                                @Html.ActionLink("Motorcycles", "Dashboard", new { id = "Motorcycles" })
+                            </li>
+                            <li class="list-inline-item">
+                                @Html.ActionLink("Bicycles", "Dashboard", new { id = "Bicycles" })
+                            </li>
+                            <li class="list-inline-item">
+                                @Html.ActionLink("Scooters", "Dashboard", new { id = "Scooters" })
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="advance-search">
+                    @using (Html.BeginForm())
+                    {
+                        <div class="row">
+                            <div class="col-md-3">
+                                @Html.DropDownList("Select_Categories", new List<SelectListItem> {
+                                    new SelectListItem{Text = "Choose category...", Value = "Choose category..."},
+                                    new SelectListItem{Text = "Cars", Value = "Cars"},
+                                    new SelectListItem{Text = "Motorcycles", Value = "Motocycles"},
+                                    new SelectListItem{Text = "Bicycles", Value = "Bicycles"},
+                                    new SelectListItem{Text = "Scooters", Value = "Scooters"}
+                                }, new { @class = "form-control" })
+
+                            </div>
+                            <div class="col-md-3">
+                                @Html.TextBox("Pickup_Date", null, new { @class = "form-control datepicker", placeholder = "Pick up date", autocomplete = "off" })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.TextBox("Return_Date", null, new { @class = "form-control datepicker", placeholder = "Return date", autocomplete = "off" })
+                            </div>
+                            <div class="col-md-3">
+                                <button class="gauto-theme-btn" type="submit">Search</button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="popular-deals section bg-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="section-title">
+                    <h2>Featured vehicles</h2>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="owl-carousel owl-theme owl-loaded owl-drag">
+                    @foreach (var item in ViewBag.Vehicles)
+                    {
+                        <div class="product-item bg-light">
+                            <div class="card">
+                                <div class="thumb-content">
+                                    <div class="offer-image">
+                                        <a href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })'><img src=@item.Vehicle_Image class="card-img-top img-fluid" /></a>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <h3 class="card-title"><a href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })'>@item.Vehicle_Name</a></h3>
+                                    <p>Start from $@item.Vehicle_Price.00 / per day</p>
+                                    <div class="offer-action">
+                                        <a href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })' class="offer-btn-1">Rent</a>
+                                        <a href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })' class="offer-btn-1">View</a>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="row">
+                                        <div class="col">
+                                            <i class="fas fa-car"></i> @item.Vehicle_Year
+                                        </div>
+                                        <div class="col">
+                                            <i class="fas fa-charging-station"></i> @item.Vehicle_TType
+                                        </div>
+                                        <div class="col">
+                                            <i class="fas fa-cog"></i> @item.Vehicle_VType
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 show-allvehicles">
+                <a class="gauto-btn" href="#">View more</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    $(document).ready(function () {
+        var container = $('.bootstrap-iso form').length > 0 ? $('.bootstrap-iso form').parent() : "body";
+
+        var date = new Date();
+        date.setDate(date.getDate());
+
+        $('.datepicker').datepicker({
+            format: 'mm/dd/yyyy',
+            container: container,
+            todayHighlight: true,
+            autoclose: true,
+            startDate: date
+        });
+
+        $('.owl-carousel').owlCarousel({
+            items: 1,
+            loop: true,
+            margin: 10,
+            autoplay: true,
+            autoplayTimeout: 3000,
+            autoplayHoverPause: true,
+            responsiveClass: true,
+            responsive: { 0: { items: 1 }, 480: { items: 1 }, 600: { items: 1 }, 1000: { items: 2 }, 1200: { items: 3 } }
+        });
+    });
+</script>
+
+<script>
+
+</script>

@@ -1,0 +1,163 @@
+﻿@using System.Web.Optimization
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    @Styles.Render("~/Content/plugins/datatable/dist/datatables.min.css")
+    @Styles.Render("~/Content/plugins/bootstrap/dist/css/bootstrap.min.css")
+    @Styles.Render("~/Content/plugins/datepicker/dist/bootstrap-datepicker.min.css")
+    @Styles.Render("~/Content/plugins/owlcarousel/dist/assets/owl.carousel.min.css")
+    @Styles.Render("~/Content/plugins/owlcarousel/dist/assets/owl.theme.default.min.css")
+    @Styles.Render("~/Content/plugins/fontawesome/css/all.min.css")
+    @Styles.Render("~/Content/plugins/notify/dist/noty.css")
+    @Styles.Render("~/Content/plugins/notify/dist/themes/metroui.css")
+    @Styles.Render("~/Content/css/style.css")
+
+    @Scripts.Render("~/Content/plugins/jquery/dist/jquery.min.js")
+    @Scripts.Render("~/Content/plugins/owlcarousel/dist/owl.carousel.min.js")
+</head>
+<body>
+    <section>
+        <div class="header-top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="float-right header-text-right"><i class="fas fa-phone"></i> +65 2331 2341</span>
+                        <span class="float-right header-text-right"><i class="fas fa-envelope"></i> admin@gmail.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <nav class="navbar navbar-expand-lg navigation">
+                            <a class="navbar-brand" href="index.aspx"><img src="~/Content/images/icon.png" width="140" height="40"></a>
+                            <button class="navbar-toggler navbar-light" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                                <span class="navbar-toggler-icon"></span>
+                            </button>
+                            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                                <ul class="navbar-nav ml-auto main-nav">
+                                    <li class="nav-item">
+                                        @Html.ActionLink("Home", "Index", new { controller = "Home" }, new { @class = "nav-link" })
+                                    </li>
+                                    <li class="nav-item">
+                                        @Html.ActionLink("Dashboard", "Dashboard", new { controller = "Home" }, new { @class = "nav-link" })
+                                    </li>
+                                    <li class="nav-item dropdown dropdown-slide">
+                                        <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Listing<span><i class="fas fa-angle-down"></i></span></a>
+                                        <div class="dropdown-menu dropdown-menu-right">
+                                            @Html.ActionLink("Register", "Register", new { controller = "Home" }, new { @class = "dropdown-item" })
+                                        </div>
+                                    </li>
+                                    @if (Session["User_Name"] != null)
+                                    {
+                                        <li class="nav-item dropdown dropdown-slide">
+                                            <a class="nav-link dropdown-toggle" href="profile.aspx" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Account<span><i class="fas fa-angle-down"></i></span></a>
+                                            <div class="dropdown-menu dropdown-menu-right">
+                                                @Html.ActionLink("Profile", "Index", new { controller = "Profile" }, new { @class = "dropdown-item" })
+                                                @Html.ActionLink("Cart", "Cart", new { controller = "Home" }, new { @class = "dropdown-item" })
+                                                
+                                                @if (Convert.ToInt32(Session["User_Role"]) == 1)
+                                                {
+                                                    @Html.ActionLink("Admin", "Index", new { controller = "Admin" }, new { @class = "dropdown-item" })
+                                                }
+
+                                                @Html.ActionLink("Exit", "Exit", new { controller = "Home" }, new { @class = "dropdown-item" })
+                                            </div>
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="nav-item">
+                                            @Html.ActionLink("Login", "Login", new { controller = "Home" }, new { @class = "nav-link" })
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        (function ($) {
+            $(document).ready(function () {
+                $.validator.setDefaults({
+                    highlight: function (element) {
+                        $(element).closest('.form-group').find(".form-control:first").addClass('is-invalid');
+                    },
+                    unhighlight: function (element) {
+                        $(element).closest('.form-group').find(".form-control:first").removeClass('is-invalid');
+                        $(element).closest('.form-group').find(".form-control:first").addClass('is-valid');
+
+                    },
+                    errorElement: 'div',
+                    errorClass: 'invalid-feedback',
+                    errorPlacement: function (error, element) {
+                        if (element.parent('.input-group').length) {
+                            error.insertAfter(element.parent());
+                        } else {
+                            error.insertAfter(element);
+                        }
+                    }
+                });
+            });
+        })(jQuery)
+    </script>
+
+    <div>
+        @RenderBody()
+    </div>
+
+    <section>
+        <div>
+            <footer class="footer section section-sm">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-7 offset-md-1 offset-lg-0">
+                            <div class="block about">
+                                <p class="alt-color">KEEP IN MIND! The website was created for testing purposes and cannot be used to rent a real vehicle.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 offset-lg-1 col-md-3">
+                            <div class="block">
+                                <h4>Site Pages</h4>
+                                <ul>
+                                    <li><a href="/Home/Index">Home page</a></li>
+                                    <li><a href="/Admin/Index">Control page</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+
+            <footer class="footer-bottom">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-sm-6 col-12">
+                            <div class="copyright">
+                                <p>Copyright © 2019. All Rights Reserved</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="top-to">
+                    <a id="top" class="" href=""><i class="fa fa-angle-up"></i></a>
+                </div>
+            </footer>
+        </div>
+    </section>
+
+    @Scripts.Render("https://maps.googleapis.com/maps/api/js?key=AIzaSyASB3M41VR9AQMzvkjuVMtyaz5BAzu44yE&callback=myMap")
+    @Scripts.Render("~/Content/js/output.min.js")
+</body>
+</html>

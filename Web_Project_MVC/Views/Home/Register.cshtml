@@ -1,0 +1,151 @@
+﻿@model Web_Project_MVC.Models.Users
+
+@{
+    ViewBag.Title = "iRent | Register page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="gauto-breadcromb-area section_70">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="breadcromb-box">
+                    <h3>Register page</h3>
+                    <ul>
+                        <li><i class="fas fa-home"></i></li>
+                        <li>@Html.ActionLink("Home", "Index")</li>
+                        <li><i class="fas fa-angle-right"></i></li>
+                        <li>register</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section-sm">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-9 col-md-7 col-lg-7 mx-auto">
+                <div class="register-form bg-light">
+                    <div class="card card-signin my-5 shadow">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Register</h5>
+                            @using (Ajax.BeginForm("Register", "Home", new AjaxOptions { OnSuccess = "OnSuccess" }))
+                            {
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>USERNAME</label>
+                                        <div class="input-group mb-2">
+                                            @Html.EditorFor(model => model.User_UserName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>EMAIL</label>
+                                        <div class="input-group mb-2">
+                                            @Html.EditorFor(model => model.User_EmailAddress, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>FIRST NAME</label>
+                                        <div class="input-group mb-2">
+                                            @Html.EditorFor(model => model.User_FirstName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>LAST NAME</label>
+                                        <div class="input-group mb-2">
+                                            @Html.EditorFor(model => model.User_LastName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>ADDRESS</label>
+                                        <div class="input-group mb-2">
+                                            @Html.EditorFor(model => model.User_Address, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>POSTAL CODE</label>
+                                        <div class="input-group mb-2">
+                                            @Html.EditorFor(model => model.User_PostalCode, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>PHONE NUMBER</label>
+                                    <div class="input-group mb-2">
+                                        @Html.EditorFor(model => model.User_PhoneNumber, new { htmlAttributes = new { @class = "form-control", type = "number", autocomplete = "off" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>PASSWORD</label>
+                                    <div class="input-group mb-2">
+                                        @Html.EditorFor(model => model.User_Password, new { htmlAttributes = new { @class = "form-control", type = "password", autocomplete = "off" } })
+                                    </div>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" id="customCheck" name="example1">
+                                    <label class="custom-control-label" for="customCheck">I have read and agree to the Terms of Use and the Privacy Policy.</label>
+                                </div>
+
+                                <br />
+                                <div class="center-button-card">
+                                    <button class="gauto-btn" type="submit">Register</button>
+                                </div>
+                            }
+                            <hr />
+                            <p class="text-center">Already have an account? @Html.ActionLink("Login!", "Login")</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            $("form").validate({
+                rules: {
+                    'User_UserName': {
+                        required: true,
+                        minlength: 3
+                    },
+                    'User_FirstName': {
+                        required: true,
+                        minlength: 3
+                    },
+                    'User_LastName': {
+                        required: true,
+                        minlength: 3
+                    },
+                    'User_EmailAddress': {
+                        required: true,
+                        email: true
+                    },
+                    'User_Address': {
+                        required: true,
+                        minlength: 3
+                    },
+                    'User_PostalCode': {
+                        required: true,
+                        minlength: 3
+                    },
+                    'User_PhoneNumber': {
+                        required: true,
+                        number: true
+                    },
+                    'User_Password': {
+                        required: true,
+                        minlength: 6
+                    },
+                }
+            });
+        });
+    })(jQuery)
+</script>

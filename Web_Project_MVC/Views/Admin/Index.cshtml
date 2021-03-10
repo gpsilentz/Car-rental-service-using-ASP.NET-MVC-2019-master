@@ -1,0 +1,368 @@
+﻿@{
+    ViewBag.Title = "iRent | Admin panel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="gauto-breadcromb-area section_70">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="breadcromb-box">
+                    <h3>Control page</h3>
+                    <ul>
+                        <li><i class="fas fa-home"></i></li>
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                        <li><i class="fas fa-angle-right"></i></li>
+                        <li>control panel</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="dashboard section bg-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <div class="widget user-dashboard-menu">
+                        <ul>
+                            <li>
+                                <a href='@Url.Action("Index", "Admin", new { id = 1 })' class="nav-link"><i class="fas fa-user"></i> Dashboard</a>
+                            </li>
+                            <li>
+                                <a href='@Url.Action("Index", "Admin", new { id = 2 })' class="nav-link"><i class="fas fa-bolt"></i> Manage users</a>
+                            </li>
+                            <li>
+                                <a href='@Url.Action("Index", "Admin", new { id = 3 })' class="nav-link"><i class="fas fa-id-badge"></i> Manage vehicles</a>
+                            </li>
+                            <li>
+                                <a href='@Url.Action("Index", "Admin", new { id = 4 })' class="nav-link"><i class="fas fa-credit-card"></i> Manage licences</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                @if (ViewBag.DisplayDashboard != null && ViewBag.DisplayDashboard)
+                {
+                    <h3 class="ProfileTitle">Dashboard</h3> <hr />
+
+                    <div class="widget">
+                        <div class="row">
+                            <div class="col">
+                                <div class="card card-signin shadow">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-user"></i> Users</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">@ViewBag.AllUsersCount</h6>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="card card-signin shadow">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="fas fa-car"></i> Vehicles</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">@ViewBag.AllVehiclesCount</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else if (ViewBag.DisplayManageVehicles != null && ViewBag.DisplayManageVehicles)
+                {
+                    <h3 class="ProfileTitle">Manage vehicles</h3> <hr />
+                    <div class="widget">
+                        <h4 class="ProfileTitle">Vehicle list<button class="btn btn-primary btn-xs float-right" type="button" data-toggle="modal" data-target="#AddModalLong">Add</button></h4> <hr />
+
+                        <div class="table-responsive">
+                            <table id="allvehicles" class="table table-striped table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Details</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.AllVehicles)
+                                    {
+                                        <tr data-vid="@item.Vehicle_Id">
+                                            <td>@item.Vehicle_Name</td>
+                                            <td>
+                                                <span class="details-span">Category: @item.Vehicle_Category</span>
+                                                <span class="details-span">Price: $@item.Vehicle_Price.00 per day</span>
+                                                <span class="details-span">Transmission: @item.Vehicle_VType</span>
+                                                <span class="details-span">Refill type: @item.Vehicle_TType</span>
+                                                <span class="details-span">Year: @item.Vehicle_Year</span>
+                                                <span class="details-span">Reserved: @item.Vehicle_Reserved</span>
+                                            </td>
+                                            <td class="action">
+                                                <ul class="list-inline justify-content-center">
+                                                    <li class="list-inline-item">
+                                                        <a class="details-view" href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })'>
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li class="list-inline-item">
+                                                        <a class="details-delete" data-ajax="true" data-ajax-complete="DeleteVehicleInTable(@item.Vehicle_Id)" data-ajax-confirm="Are you sure you want to delete this vehicle?" data-ajax-method="Post" data-ajax-success="OnSuccess" href="/Admin/DeleteVehicle/@item.Vehicle_Id">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    using (Ajax.BeginForm("UploadVehicle", "Admin", new AjaxOptions { OnSuccess = "OnSuccess" }, new { id = "UploadVehicleForm", enctype = "multipart/form-data" }))
+                    {
+                        <div class="modal fade" id="AddModalLong" tabindex="-1" role="dialog" aria-labelledby="RegisterModalLong" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="RegisterModalLong">Add new vehicle</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label>NAME</label>
+                                            <div class="input-group mb-2">
+                                                @Html.TextBox("VehicleName", null, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>PRICE /PER DAY</label>
+                                            <div class="input-group mb-2">
+                                                @Html.TextBox("VehiclePrice", null, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>CATEGORY</label>
+                                            <div class="input-group mb-2">
+                                                @Html.DropDownList("VehicleCategories", new List<SelectListItem>
+                                                {
+                                                      new SelectListItem { Text = "Choose category...", Value = "Choose category...", Selected = true },
+                                                      new SelectListItem { Text = "Cars", Value = "Cars" },
+                                                      new SelectListItem { Text = "Motocycles", Value = "Motocycles" },
+                                                      new SelectListItem { Text = "Bicycles", Value = "Bicycles" },
+                                                      new SelectListItem { Text = "Scooters", Value = "Scooters" }
+                                                }, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label>TRANSMISSION TYPE</label>
+                                                <div class="input-group mb-2">
+                                                    @Html.DropDownList("VehicleType", new List<SelectListItem>
+                                                    {
+                                                          new SelectListItem { Text = "Choose type...", Value = "Choose type...", Selected = true },
+                                                          new SelectListItem { Text = "Auto", Value = "Auto" },
+                                                          new SelectListItem { Text = "Manual", Value = "Manual" }
+                                                    }, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>REFILL TYPE</label>
+                                                <div class="input-group mb-2">
+                                                    @Html.DropDownList("VehicleReFillType", new List<SelectListItem>
+                                                    {
+                                                          new SelectListItem { Text = "Choose type...", Value = "Choose type...", Selected = true },
+                                                          new SelectListItem { Text = "Diesil", Value = "Diesil" },
+                                                          new SelectListItem { Text = "Electric", Value = "Electric" }
+                                                    }, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>YEAR</label>
+                                            <div class="input-group mb-2">
+                                                @Html.TextBox("VehicleYear", null, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label>LONGTITUDE</label>
+                                                <div class="input-group mb-2">
+                                                    @Html.TextBox("VehicleLong", null, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label>LATTITUDE</label>
+                                                <div class="input-group mb-2">
+                                                    @Html.TextBox("VehicleLat", null, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>VEHICLE IMAGE</label>
+                                            @Html.TextBox("FileVehicle", null, new { @class = "form-control", type = "file" })
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button class="btn btn-primary" type="submit" onclick="SubmitButtonVehicleOnClick()">Add vehicle</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else if (ViewBag.DisplayManageUsers != null && ViewBag.DisplayManageUsers)
+                {
+                    <h3 class="ProfileTitle">Manage users</h3> <hr />
+                    <div class="widget">
+                        <h4 class="ProfileTitle">User list</h4> <hr />
+
+                        <div class="table-responsive">
+                            <table id="allusers" class="table table-striped table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Details</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.AllUsers)
+                                    {
+                                        <tr data-vid="@item.User_Id">
+                                            <td>@item.User_UserName</td>
+                                            <td>
+                                                <span class="details-span">First name: @item.User_FirstName</span>
+                                                <span class="details-span">Last name: @item.User_LastName</span>
+                                                <span class="details-span">Email: @item.User_EmailAddress</span>
+                                            </td>
+                                            <td class="action">
+                                                <ul class="list-inline justify-content-center">
+                                                    <li class="list-inline-item">
+                                                        <a class="details-delete" data-ajax="true" data-ajax-complete="DeleteUserInTable(@item.User_Id)" data-ajax-confirm="Are you sure you want to delete this user?" data-ajax-method="Post" data-ajax-success="OnSuccess" href="/Admin/DeleteUser/@item.User_Id">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else if (ViewBag.DisplayManageLicences != null && ViewBag.DisplayManageLicences)
+                {
+                    <h3 class="ProfileTitle">Manage licences</h3> <hr />
+
+                    <div class="widget">
+                        <h4 class="ProfileTitle">Licence list</h4> <hr />
+
+                        <div class="table-responsive">
+                            <table id="allusers" class="table table-striped table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Picture</th>
+                                        <th scope="col">Details</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.AllLicences)
+                                    {
+                                    <tr data-vid="@item.Licence_Id">
+                                        <th scope="row">@item.User_UserName</th>
+                                        <td><img src='@item.Licence_Image' class="img-responsive" width="180" height="130" /></td>
+                                        <td>
+                                            <span class="details-span">Name: @item.Licence_Name</span>
+                                            <span class="details-span">Number: @item.Licence_Number</span>
+                                            <span class="details-span">Birth date: @item.Licence_BirthDate</span>
+                                            <span class="details-span">Issue date: @item.Licence_IssueDate</span>
+                                            <span class="details-span">Category: @item.Licence_Category</span>
+                                            <span class="details-span">Approved: @item.Licence_Approved</span>
+                                        </td>
+                                        <td class="action">
+                                            <ul class="list-inline justify-content-center">
+                                                @if (!item.Licence_Approved) 
+                                                {
+                                                    <li class="list-inline-item">
+                                                        <a class="details-view" data-ajax="true" data-ajax-method="Post" data-ajax-success="OnSuccess" href="/Admin/ApproveLicence/@item.Licence_Id">
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    </li>
+                                                }
+                                                <li class="list-inline-item">
+                                                    <a class="details-delete" data-ajax="true" data-ajax-complete="DeleteLicenceInTable(@item.Licence_Id)" data-ajax-confirm="Are you sure you want to delete this licence?" data-ajax-method="Post" data-ajax-success="OnSuccess" href="/Admin/DeleteLicence/@item.Licence_Id">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function SubmitButtonVehicleOnClick() {
+        var formdata = new FormData();
+        var file = document.getElementById("FileVehicle").files[0];
+
+        formdata.append("FileVehicle", file);
+
+         $.ajax({
+            type: "POST",
+            url: '@Url.Action("UploadVehicle", "Admin")',
+            data: formdata,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            OnSuccess: "OnSuccess"
+        });
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#allvehicles').DataTable();
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#allusers').DataTable();
+    });
+</script>
+
+
+<script>
+    function DeleteVehicleInTable(Vehicle_Id) {
+        $("tr[data-vid='" + String(Vehicle_Id) + "']").remove();
+        return false;
+    }
+</script>
+
+<script>
+    function DeleteUserInTable(User_Id) {
+        $("tr[data-vid='" + String(User_Id) + "']").remove();
+        return false;
+    }
+</script>
+
+<script>
+    function DeleteLicenceInTable(Licence_Id) {
+        $("tr[data-vid='" + String(Licence_Id) + "']").remove();
+        return false;
+    }
+</script>

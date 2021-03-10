@@ -1,0 +1,115 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+@model IPagedList<Web_Project_MVC.Models.Vehicles>
+
+@{
+    ViewBag.Title = "iRent | Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="gauto-breadcromb-area section_70">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="breadcromb-box">
+                    <h3>Dashboard</h3>
+                    <ul>
+                        <li><i class="fas fa-home"></i></li>
+                        <li>@Html.ActionLink("Home", "Index")</li>
+                        <li><i class="fas fa-angle-right"></i></li>
+                        <li>dashboard</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section-sm">
+    <div class="container">
+        @if (ViewBag.ShowSearchResults != null && ViewBag.ShowSearchResults)
+        {
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="search-result bg-gray">
+                        <h2>Result for @ViewBag.ShowSearchResultsText</h2>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-md-3">
+                <div class="category-sidebar">
+                    <div class="widget category-list">
+                        <h4 class="widget-header">Vehicle type</h4>
+                        <ul class="category-list">
+                            <li>@Html.ActionLink("Cars", "Dashboard", new { id = "Cars" })</li>
+                            <li>@Html.ActionLink("Motocycles", "Dashboard", new { id = "Motocycles" })</li>
+                            <li>@Html.ActionLink("Bicycles", "Dashboard", new { id = "Bicycles" })</li>
+                            <li>@Html.ActionLink("Scooters", "Dashboard", new { id = "Scooters" })</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="category-search-filter">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Sort by</strong>
+                            <select onchange="var pathparts = location.pathname.split('/'); var thirdparam = pathparts[3] != null ? '/' + pathparts[3].trim('/') : ''; if (this.value != 'choose') window.location.href = window.location.origin + '/' + pathparts[1].trim('/') + '/' + pathparts[2].trim('/') + thirdparam + '?sortby=' + (this.value)">
+                                <option value="choose">Choose</option>
+                                <option value="lowestprice">Lowest Price</option>
+                                <option value="highestprice">Highest Price</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="product-grid-list">
+                    <div class="row mt-30">
+                        @foreach (var item in Model)
+                        {
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6">
+                                <div class="product-item bg-light">
+                                    <div class="card">
+                                        <div class="thumb-content">
+                                            <div class="offer-image">
+                                                <a href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })'><img src=@item.Vehicle_Image class="card-img-top img-fluid" /></a>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <h3 class="card-title"><a href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })'>@item.Vehicle_Name</a></h3>
+                                            <p>Start from $@item.Vehicle_Price.00 / per day</p>
+                                            <div class="offer-action">
+                                                <a href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })' class="offer-btn-1">Rent</a>
+                                                <a href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })' class="offer-btn-1">View</a>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <i class="fas fa-car"></i> @item.Vehicle_Year
+                                                </div>
+                                                <div class="col">
+                                                    <i class="fas fa-charging-station"></i> @item.Vehicle_TType
+                                                </div>
+                                                <div class="col">
+                                                    <i class="fas fa-cog"></i> @item.Vehicle_VType
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="paginationdash justify-content-center">
+                        <nav aria-label="Page navigation example">
+                            <ul class="paginationdash">
+                                @Html.PagedListPager(Model, page => Url.Action("Dashboard", new { page }), new PagedListRenderOptions { LiElementClasses = new string[] { "page-item" }, UlElementClasses =  new string[] { "paginationdash" } } )
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

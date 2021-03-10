@@ -1,0 +1,410 @@
+﻿@{
+    ViewBag.Title = "iRent | Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<section class="gauto-breadcromb-area section_70">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="breadcromb-box">
+                    <h3>Profile page</h3>
+                    <ul>
+                        <li><i class="fas fa-home"></i></li>
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                        <li><i class="fas fa-angle-right"></i></li>
+                        <li>profile</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="dashboard section bg-gray">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="sidebar">
+                    <div class="widget user-dashboard-profile">
+                        <h5 class="text-center">@Convert.ToString(Session["User_Name"])</h5>
+                    </div>
+                    <div class="widget user-dashboard-menu">
+                        <ul>
+                            <li>
+                                <a href='@Url.Action("Index", "Profile", new { id = 1 })' class="nav-link"><i class="fas fa-user"></i> Edit profile</a>
+                            </li>
+                            <li>
+                                <a href='@Url.Action("Index", "Profile", new { id = 2 })' class="nav-link"><i class="fas fa-bolt"></i> My orders</a>
+                            </li>
+                            <li>
+                                <a href='@Url.Action("Index", "Profile", new { id = 3 })' class="nav-link"><i class="fas fa-id-badge"></i> Licence</a>
+                            </li>
+                            <li>
+                                <a href='@Url.Action("Index", "Profile", new { id = 4 })' class="nav-link"><i class="fas fa-credit-card"></i> Payment</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                @if (ViewBag.DisplayManageProfile != null && ViewBag.DisplayManageProfile)
+                {
+                    <h3 class="ProfileTitle">Edit profile</h3> <hr />
+                    <div class="widget">
+                        @using (Ajax.BeginForm("SaveUserDetails", "Profile", new AjaxOptions { OnSuccess = "OnSuccess" }, new { id = "UserDetailsForm" }))
+                        {
+                            <h4 class="ProfileTitle">General settings <button class="btn btn-primary btn-xs float-right" type="submit">Save</button></h4>
+                            <hr />
+                            <div class="form-group">
+                                <label>EMAIL</label>
+                                <div class="input-group mb-2">
+                                    @Html.TextBox("EmailAddressRechek", null, new { @class = "form-control", @Value = ViewBag.EmailAddress })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>PHONE NUMBER</label>
+                                <div class="input-group mb-2">
+                                    @Html.TextBox("PhoneNumberRechek", null, new { @class = "form-control", @Value = ViewBag.PhoneNumber })
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label>ADDRESS</label>
+                                    <div class="input-group mb-2">
+                                        @Html.TextBox("AddressRechek", null, new { @class = "form-control", @Value = ViewBag.Address })
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>POSTAL CODE</label>
+                                    <div class="input-group mb-2">
+                                        @Html.TextBox("PostalCodeRechek", null, new { @class = "form-control", @Value = ViewBag.PostalCode })
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="widget">
+                        @using (Ajax.BeginForm("SaveUserPassword", "Profile", new AjaxOptions { OnSuccess = "OnSuccess" }, new { id = "UserPasswordForm" }))
+                        {
+                            <h4 class="ProfileTitle">Change password <button class="btn btn-primary btn-xs float-right" type="submit">Save</button></h4>
+                            <hr />
+                            <div class="form-group">
+                                <label>NEW PASSWORD</label>
+                                <div class="input-group mb-2">
+                                    @Html.TextBox("PasswordRechek", null, new { @class = "form-control", type = "password" })
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                }
+                else if (ViewBag.DisplayReservedVehicles != null && ViewBag.DisplayReservedVehicles)
+                {
+                    <h3 class="ProfileTitle">My orders</h3> <hr />
+
+                    <div class="widget">
+                        <div class="table-responsive">
+                            <table id="rentedvehicles" class="table table-striped table-bordered">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Details</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in ViewBag.ReservedVehicles)
+                                    {
+                                        <tr data-vid="@item.Vehicle_Id">
+                                            <td>@item.Vehicle_Name</td>
+                                            <td>
+                                                <span class="details-span">Start date: @item.RVehicle_StartDate</span>
+                                                <span class="details-span">Return date: @item.RVehicle_EndDate</span>
+                                                <span class="details-span">Activated: @item.RVehicle_Activated</span>
+                                                <span class="details-span">Key to activate: @item.RVehicle_ActivateKey</span>
+                                            </td>
+                                            <td class="action">
+                                                <ul class="list-inline justify-content-center">
+                                                    <li class="list-inline-item">
+                                                        <a class="details-view" href='@Url.Action("Details", "Home", new { id = @item.Vehicle_Id })'>
+                                                            <i class="fas fa-eye"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li class="list-inline-item">
+                                                        <a class="details-delete" data-ajax="true" data-ajax-complete="DeleteReservedVehicle(@item.Vehicle_Id)" data-ajax-confirm="Are you sure you want to delete the reserved vehicle?" data-ajax-method="Post" data-ajax-success="OnSuccess" href="/Profile/DeleteReservedVehicle/@item.Vehicle_Id">
+                                                            <i class="fas fa-trash"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                else if (ViewBag.DisplayLicence != null && ViewBag.DisplayLicence)
+                {
+                    <h3 class="ProfileTitle">My licence</h3> <hr />
+
+                    <div class="widget">
+                        @if (ViewBag.HaveLicence != null && ViewBag.HaveLicence)
+                        {
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <img class="img-responsive" width="300" height="150" src="@ViewBag.LicencePath" />
+                                </div>
+                                <div class="col-md-6">
+                                    <span class="badge badge-success">
+                                        @if (ViewBag.LicenceApproved != null && ViewBag.LicenceApproved) 
+                                        {
+                                            <span>Approved</span>
+                                        } 
+                                        else 
+                                        {
+                                            <span>Waiting for approval</span>
+                                        }
+                                    </span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            using (Ajax.BeginForm("UploadUserLicence", "Profile", new AjaxOptions { OnSuccess = "OnSuccess" }, new { id = "UserLicenceForm", enctype = "multipart/form-data" }))
+                            {
+                                <div class="form-group">
+                                    <label>NUMBER</label>
+                                    <div class="input-group mb-2">
+                                        @Html.TextBox("NumberLic", null, new { @class = "form-control", autocomplete = "off" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>NAME</label>
+                                    <div class="input-group mb-2">
+                                        @Html.TextBox("NameLic", null, new { @class = "form-control", autocomplete = "off" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>BIRTH DATE</label>
+                                    <div class="input-group mb-2">
+                                        @Html.TextBox("BirthDateLic", null, new { @class = "form-control datepicker", autocomplete = "off" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>ISSUE DATE</label>
+                                    <div class="input-group mb-2">
+                                        @Html.TextBox("IssueDateLic", null, new { @class = "form-control datepicker", autocomplete = "off" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>CATEGORY</label>
+                                    <div class="input-group mb-2">
+                                        @Html.TextBox("CategoryLic", null, new { @class = "form-control", autocomplete = "off" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>SCAN IMAGE</label>
+                                    @Html.TextBox("FileLic", null, new { @class = "form-control", type = "file" })
+                                </div>
+                                <br />
+                                <div class="widget-button">
+                                    <button class="gauto-btn" type="submit" onclick="SubmitButtonLicenceOnClick()">Upload</button>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+                else if (ViewBag.DisplayPaymentDetails != null && ViewBag.DisplayPaymentDetails)
+                {
+                    <h3 class="ProfileTitle">Payment methods</h3> <hr />
+
+                    <div class="widget">
+                        @if (ViewBag.HaveCreditCard != null && ViewBag.HaveCreditCard)
+                        {
+                            <p>@ViewBag.CreditCardNumber</p>
+                        }
+                        else
+                        {
+                            using (Ajax.BeginForm("AddCreditCard", "Profile", new AjaxOptions { OnSuccess = "OnSuccess" }, new { id = "UserCreditCardForm" }))
+                            {
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label>FULL NAME (on the card)</label>
+                                        <div class="input-group mb-2">
+                                            @Html.TextBox("CCFullName", null, new { @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label>CARD NUMBER</label>
+                                        <div class="input-group mb-2">
+                                            @Html.TextBox("CCNumber", null, new { @class = "form-control", autocomplete = "off" })
+                                            <div class="input-group-append">
+                                                <span class="input-group-text text-muted">
+                                                    <i class="fa fa-cc-visa mx-1"></i>
+                                                    <i class="fa fa-cc-amex mx-1"></i>
+                                                    <i class="fa fa-cc-mastercard mx-1"></i>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-9">
+                                        <label>EXPIRATION DATE</label>
+                                        <div class="input-group mb-2">
+                                            <div class="form-row row">
+                                                <div class="form-group col-md-6">
+                                                    @Html.TextBox("CCMM", null, new { @class = "form-control", placeholder = "MM", autocomplete = "off" })
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    @Html.TextBox("CCYY", null, new { @class = "form-control", placeholder = "YY", autocomplete = "off" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group col-md-3">
+                                        <label>CVV</label>
+                                        <div class="input-group mb-2">
+                                            @Html.TextBox("CCSecretCode", null, new { @class = "form-control", autocomplete = "off" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <br />
+                                <div class="widget-button">
+                                    <button class="gauto-btn" type="submit">Add</button>
+                                </div>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            $("#UserDetailsForm").validate({
+                rules: {
+                    'EmailAddressRechek': {
+                        required: true,
+                        email: true
+                    },
+                    'PhoneNumberRechek': {
+                        required: true,
+                        number: true
+                    },
+                    'AddressRechek': {
+                        required: true
+                    },
+                    'PostalCodeRechek': {
+                        required: true
+                    }
+                }
+            });
+        });
+    })(jQuery)
+</script>
+
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            $("#UserLicenceForm").validate({
+                rules: {
+                    'NumberLic': {
+                        required: true
+                    },
+                    'NameLic': {
+                        required: true
+                    },
+                    'BirthDateLic': {
+                        required: true
+                    },
+                    'IssueDateLic': {
+                        required: true
+                    },
+                    'CategoryLic': {
+                        required: true
+                    },
+                    'FileLic': {
+                        required: true
+                    }
+                }
+            });
+        });
+    })(jQuery)
+</script>
+
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            $("#UserCreditCardForm").validate({
+                rules: {
+                    'CCFullName': {
+                        required: true
+                    },
+                    'CCNumber': {
+                        required: true
+                    },
+                    'CCMM': {
+                        required: true
+                    },
+                    'CCYY': {
+                        required: true
+                    },
+                    'CCSecretCode': {
+                        required: true
+                    }
+                }
+            });
+        });
+    })(jQuery)
+</script>
+
+<script>
+    (function ($) {
+        $(document).ready(function () {
+            $("#UserPasswordForm").validate({
+                rules: {
+                    'PasswordRechek': {
+                        required: true,
+                    }
+                }
+            });
+        });
+    })(jQuery)
+</script>
+
+<script>
+    function SubmitButtonLicenceOnClick() {
+        var formdata = new FormData();
+        var file = document.getElementById("FileLic").files[0];
+
+        formdata.append("FileLic", file);
+
+         $.ajax({
+            type: "POST",
+            url: '@Url.Action("UploadUserLicence","Profile")',
+            data: formdata,
+            dataType: 'json',
+            contentType: false,
+            processData: false,
+            OnSuccess: "OnSuccess"
+        });
+    }
+</script>
+
+<script>
+    function DeleteRVInTable(Vehicle_Id) {
+        $("tr[data-vid='" + String(Vehicle_Id) + "']").remove();
+        return false;
+    }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#rentedvehicles').DataTable();
+    });
+</script>

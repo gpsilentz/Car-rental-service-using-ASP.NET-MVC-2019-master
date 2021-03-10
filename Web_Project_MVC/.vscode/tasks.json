@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "taskSelector": "/t:",
+    "showOutput": "silent",
+    "tasks": [
+        {
+            "taskName": "build",
+            "args": [
+                "/property:GenerateFullPaths=true"
+            ],
+            "windows": {
+                "command": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\MSBuild\\Current\\Bin\\msbuild.exe"
+            },
+            "showOutput": "silent",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "suppressTaskName": true,
+            "taskName": "iisexpress",
+            "isShellCommand": true,
+            "windows": {
+                "command": "C:\\Program Files (x86)\\IIS Express\\iisexpress.exe"
+            },
+            "args": [
+                "/path:${workspaceRoot}",
+                "/port:51715"
+            ],
+            "showOutput": "always",
+            "problemMatcher": []
+        }
+    ]
+}
